@@ -1,0 +1,95 @@
+using MusicalScalePlayer;
+
+MusicalPlayer player = new MusicalPlayer();
+
+Console.WriteLine("Musical Scale Player");
+Console.WriteLine("Available notes: C C# D D# E F F# G G# A A# B");
+
+Console.Write("Enter notes: ");
+string input = Console.ReadLine() ?? "";
+
+Console.Write("Enter tempo (BPM): ");
+int bpm = int.Parse(Console.ReadLine() ?? "120");
+
+int duration = 60000 / bpm;
+
+List<MusicalNote> sequence = player.CreateSequence(input, duration);
+
+Console.WriteLine("\nPlaying sequence...");
+player.Play(sequence);
+
+Console.WriteLine("\nFinished.");
+
+=================================================================================
+
+namespace MusicalScalePlayer;
+
+public class MusicalPlayer
+{
+    private readonly Dictionary<string, double> frequencies = new()
+    {
+        { "C", 261.63 },
+        { "C#", 277.18 },
+        { "D", 293.66 },
+        { "D#", 311.13 },
+        { "E", 329.63 },
+        { "F", 349.23 },
+        { "F#", 369.99 },
+        { "G", 392.00 },
+        { "G#", 415.30 },
+        { "A", 440.00 },
+        { "A#", 466.16 },
+        { "B", 493.88 }
+    };
+
+    public List<MusicalNote> CreateSequence(string input, int duration)
+    {
+        List<MusicalNote> notes = new();
+
+        string[] noteNames = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (string name in noteNames)
+        {
+            if (frequencies.ContainsKey(name))
+            {
+                notes.Add(new MusicalNote(name, frequencies[name], duration));
+            }
+            else
+            {
+                Console.WriteLine($"Invalid note: {name}");
+            }
+        }
+
+        return notes;
+    }
+
+    public void Play(List<MusicalNote> notes)
+    {
+        foreach (MusicalNote note in notes)
+        {
+            Console.WriteLine($"Playing {note.Name}");
+            Console.Beep((int)note.Frequency, note.Duration);
+        }
+    }
+}
+
+
+
+================================================================================
+
+
+namespace MusicalScalePlayer;
+
+public class MusicalNote
+{
+    public string Name { get; set; }
+    public double Frequency { get; set; }
+    public int Duration { get; set; }
+
+    public MusicalNote(string name, double frequency, int duration)
+    {
+        Name = name;
+        Frequency = frequency;
+        Duration = duration;
+    }
+}
