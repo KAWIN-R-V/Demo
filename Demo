@@ -20,7 +20,9 @@ player.Play(sequence);
 
 Console.WriteLine("\nFinished.");
 
+
 =================================================================================
+
 
 namespace MusicalScalePlayer;
 
